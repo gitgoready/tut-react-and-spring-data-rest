@@ -13,8 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.greglturnquist.payroll;
+package cn.connectai.myai.websocket;
 
+import cn.connectai.myai.entity.Manager;
+import cn.connectai.myai.entity.ManagerRepository;
+import cn.connectai.myai.entity.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.rest.core.annotation.HandleBeforeCreate;
 import org.springframework.data.rest.core.annotation.RepositoryEventHandler;
@@ -26,7 +29,7 @@ import org.springframework.stereotype.Component;
  */
 // tag::code[]
 @Component
-@RepositoryEventHandler(Employee.class)
+@RepositoryEventHandler(User.class)
 public class SpringDataRestEventHandler {
 
 	private final ManagerRepository managerRepository;
@@ -37,17 +40,17 @@ public class SpringDataRestEventHandler {
 	}
 
 	@HandleBeforeCreate
-	public void applyUserInformationUsingSecurityContext(Employee employee) {
+	public void applyUserInformationUsingSecurityContext(User user) {
 
 		String name = SecurityContextHolder.getContext().getAuthentication().getName();
 		Manager manager = this.managerRepository.findByName(name);
 		if (manager == null) {
-			Manager newManager = new Manager();
-			newManager.setName(name);
-			newManager.setRoles(new String[]{"ROLE_MANAGER"});
+			Manager newManager = new Manager(name,"",new String[]{"ROLE_MANAGER"});
+//			newManager.setName(name);
+//			newManager.setRoles(new String[]{"ROLE_MANAGER"});
 			manager = this.managerRepository.save(newManager);
 		}
-		employee.setManager(manager);
+		user.setManager(manager);
 	}
 }
 // end::code[]

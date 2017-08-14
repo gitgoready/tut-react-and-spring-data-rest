@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.greglturnquist.payroll;
+package cn.connectai.myai.entity;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -25,33 +25,40 @@ import lombok.Data;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import java.util.Date;
+
 /**
  * @author Greg Turnquist
  */
 // tag::code[]
 @Data
 @Entity
-public class Employee {
+public class User {
 
 	private @Id @GeneratedValue Long id;
 	private String firstName;
 	private String lastName;
 	private String description;
 	private String phoneNum;
-	private String mailAddress;
+	private String email;
 	private String weiboId;
 	private String qqId;
 	private String wxOpenId;
 	private String wxUnionId;
+	private String sso;
+
 	private String wxAccessTocken;
 
-	private @Version @JsonIgnore Long version;
+	private String password;
+	private Date lastPasswordResetDate;
+	private String[] roles;
 
+	private @Version @JsonIgnore Long version;
 	private @ManyToOne Manager manager;
 
-	private Employee() {}
+	private User() {}
 
-	public Employee(String firstName, String lastName, String description, Manager manager) {
+	public User(String firstName, String lastName, String description, Manager manager) {
 		this.firstName = firstName;
 		this.lastName = lastName;
 		this.description = description;

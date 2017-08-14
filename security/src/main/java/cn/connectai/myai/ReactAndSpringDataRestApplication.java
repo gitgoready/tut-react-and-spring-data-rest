@@ -13,22 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.greglturnquist.payroll;
+package cn.connectai.myai;
 
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 /**
  * @author Greg Turnquist
  */
 // tag::code[]
-@Controller
-public class HomeController {
+@SpringBootApplication
+//@EnableAutoConfiguration(exclude={DataSourceAutoConfiguration.class})
+public class ReactAndSpringDataRestApplication {
 
-	@RequestMapping(value = "/")
-	public String index() {
-		return "index";
+	public static void main(String[] args) {
+		SpringApplication.run(ReactAndSpringDataRestApplication.class, args);
 	}
-
 }
 // end::code[]

@@ -13,13 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.greglturnquist.payroll;
+package cn.connectai.myai.entity;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.authority.AuthorityUtils;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
 /**
@@ -29,14 +26,14 @@ import org.springframework.stereotype.Component;
 @Component
 public class DatabaseLoader implements CommandLineRunner {
 
-	private final EmployeeRepository employees;
+	private final UserRepository userRepository;
 	private final ManagerRepository managers;
 
 	@Autowired
-	public DatabaseLoader(EmployeeRepository employeeRepository,
+	public DatabaseLoader(UserRepository userRepository,
 						  ManagerRepository managerRepository) {
 
-		this.employees = employeeRepository;
+		this.userRepository = userRepository;
 		this.managers = managerRepository;
 	}
 
@@ -52,17 +49,17 @@ public class DatabaseLoader implements CommandLineRunner {
 //			new UsernamePasswordAuthenticationToken("greg", "doesn't matter",
 //				AuthorityUtils.createAuthorityList("ROLE_MANAGER")));
 //
-//		this.employees.save(new Employee("Frodo", "Baggins", "ring bearer", greg));
-//		this.employees.save(new Employee("Bilbo", "Baggins", "burglar", greg));
-//		this.employees.save(new Employee("Gandalf", "the Grey", "wizard", greg));
+//		this.userRepository.save(new User("Frodo", "Baggins", "ring bearer", greg));
+//		this.userRepository.save(new User("Bilbo", "Baggins", "burglar", greg));
+//		this.userRepository.save(new User("Gandalf", "the Grey", "wizard", greg));
 //
 //		SecurityContextHolder.getContext().setAuthentication(
 //			new UsernamePasswordAuthenticationToken("oliver", "doesn't matter",
 //				AuthorityUtils.createAuthorityList("ROLE_MANAGER")));
 //
-//		this.employees.save(new Employee("Samwise", "Gamgee", "gardener", oliver));
-//		this.employees.save(new Employee("Merry", "Brandybuck", "pony rider", oliver));
-//		this.employees.save(new Employee("Peregrin", "Took", "pipe smoker", oliver));
+//		this.userRepository.save(new User("Samwise", "Gamgee", "gardener", oliver));
+//		this.userRepository.save(new User("Merry", "Brandybuck", "pony rider", oliver));
+//		this.userRepository.save(new User("Peregrin", "Took", "pipe smoker", oliver));
 //
 //		SecurityContextHolder.clearContext();
 	}

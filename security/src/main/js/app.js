@@ -15,7 +15,7 @@ class App extends React.Component {
 
 	constructor(props) {
 		super(props);
-		this.state = {employees: [], attributes: [], page: 1, pageSize: 2, links: {}};
+		this.state = {users: [], attributes: [], page: 1, pageSize: 2, links: {}};
 		this.updatePageSize = this.updatePageSize.bind(this);
 		this.onCreate = this.onCreate.bind(this);
 		this.onUpdate = this.onUpdate.bind(this);
@@ -27,11 +27,11 @@ class App extends React.Component {
 
 	loadFromServer(pageSize) {
 		follow(client, root, [
-				{rel: 'employees', params: {size: pageSize}}]
-		).then(employeeCollection => {
+				{rel: 'users', params: {size: pageSize}}]
+		).then(userCollection => {
 			return client({
 				method: 'GET',
-				path: employeeCollection.entity._links.profile.href,
+				path: userCollection.entity._links.profile.href,
 				headers: {'Accept': 'application/schema+json'}
 			}).then(schema => {
 				// tag::json-schema-filter[]
@@ -50,24 +50,24 @@ class App extends React.Component {
 				});
 
 				this.schema = schema.entity;
-				this.links = employeeCollection.entity._links;
-				return employeeCollection;
+				this.links = userCollection.entity._links;
+				return userCollection;
 				// end::json-schema-filter[]
 			});
-		}).then(employeeCollection => {
-			this.page = employeeCollection.entity.page;
-			return employeeCollection.entity._embedded.employees.map(employee =>
+		}).then(userCollection => {
+			this.page = userCollection.entity.page;
+			return userCollection.entity._embedded.users.map(user =>
 					client({
 						method: 'GET',
-						path: employee._links.self.href
+						path: user._links.self.href
 					})
 			);
-		}).then(employeePromises => {
-			return when.all(employeePromises);
-		}).done(employees => {
+		}).then(userPromises => {
+			return when.all(userPromises);
+		}).done(users => {
 			this.setState({
 				page: this.page,
-				employees: employees,
+				users: users,
 				attributes: Object.keys(this.schema.properties),
 				pageSize: pageSize,
 				links: this.links
@@ -76,12 +76,12 @@ class App extends React.Component {
 	}
 
 	// tag::on-create[]
-	onCreate(newEmployee) {
-		follow(client, root, ['employees']).done(response => {
+	onCreate(newUser) {
+		follow(client, root, ['users']).done(response => {
 			client({
 				method: 'POST',
 				path: response.entity._links.self.href,
-				entity: newEmployee,
+				entity: newUser,
 				headers: {'Content-Type': 'application/json'}
 			})
 		})
@@ -89,24 +89,24 @@ class App extends React.Component {
 	// end::on-create[]
 
 	// tag::on-update[]
-	onUpdate(employee, updatedEmployee) {
+	onUpdate(user, updatedUser) {
 		client({
 			method: 'PUT',
-			path: employee.entity._links.self.href,
-			entity: updatedEmployee,
+			path: user.entity._links.self.href,
+			entity: updatedUser,
 			headers: {
 				'Content-Type': 'application/json',
-				'If-Match': employee.headers.Etag
+				'If-Match': user.headers.Etag
 			}
 		}).done(response => {
 			/* Let the websocket handler update the state */
 		}, response => {
 			if (response.status.code === 403) {
 				alert('ACCESS DENIED: You are not authorized to update ' +
-					employee.entity._links.self.href);
+					user.entity._links.self.href);
 			}
 			if (response.status.code === 412) {
-				alert('DENIED: Unable to update ' + employee.entity._links.self.href +
+				alert('DENIED: Unable to update ' + user.entity._links.self.href +
 					'. Your copy is stale.');
 			}
 		});
@@ -114,13 +114,13 @@ class App extends React.Component {
 	// end::on-update[]
 
 	// tag::on-delete[]
-	onDelete(employee) {
-		client({method: 'DELETE', path: employee.entity._links.self.href}
+	onDelete(user) {
+		client({method: 'DELETE', path: user.entity._links.self.href}
 		).done(response => {/* let the websocket handle updating the UI */},
 		response => {
 			if (response.status.code === 403) {
 				alert('ACCESS DENIED: You are not authorized to delete ' +
-					employee.entity._links.self.href);
+					user.entity._links.self.href);
 			}
 		});
 	}
@@ -130,22 +130,22 @@ class App extends React.Component {
 		client({
 			method: 'GET',
 			path: navUri
-		}).then(employeeCollection => {
-			this.links = employeeCollection.entity._links;
-			this.page = employeeCollection.entity.page;
+		}).then(userCollection => {
+			this.links = userCollection.entity._links;
+			this.page = userCollection.entity.page;
 
-			return employeeCollection.entity._embedded.employees.map(employee =>
+			return userCollection.entity._embedded.users.map(user =>
 					client({
 						method: 'GET',
-						path: employee._links.self.href
+						path: user._links.self.href
 					})
 			);
-		}).then(employeePromises => {
-			return when.all(employeePromises);
-		}).done(employees => {
+		}).then(userPromises => {
+			return when.all(userPromises);
+		}).done(users => {
 			this.setState({
 				page: this.page,
-				employees: employees,
+				users: users,
 				attributes: Object.keys(this.schema.properties),
 				pageSize: this.state.pageSize,
 				links: this.links
@@ -162,7 +162,7 @@ class App extends React.Component {
 	// tag::websocket-handlers[]
 	refreshAndGoToLastPage(message) {
 		follow(client, root, [{
-			rel: 'employees',
+			rel: 'users',
 			params: {size: this.state.pageSize}
 		}]).done(response => {
 			if (response.entity._links.last !== undefined) {
@@ -175,27 +175,27 @@ class App extends React.Component {
 
 	refreshCurrentPage(message) {
 		follow(client, root, [{
-			rel: 'employees',
+			rel: 'users',
 			params: {
 				size: this.state.pageSize,
 				page: this.state.page.number
 			}
-		}]).then(employeeCollection => {
-			this.links = employeeCollection.entity._links;
-			this.page = employeeCollection.entity.page;
+		}]).then(userCollection => {
+			this.links = userCollection.entity._links;
+			this.page = userCollection.entity.page;
 
-			return employeeCollection.entity._embedded.employees.map(employee => {
+			return userCollection.entity._embedded.users.map(user => {
 				return client({
 					method: 'GET',
-					path: employee._links.self.href
+					path: user._links.self.href
 				})
 			});
-		}).then(employeePromises => {
-			return when.all(employeePromises);
-		}).then(employees => {
+		}).then(userPromises => {
+			return when.all(userPromises);
+		}).then(users => {
 			this.setState({
 				page: this.page,
-				employees: employees,
+				users: users,
 				attributes: Object.keys(this.schema.properties),
 				pageSize: this.state.pageSize,
 				links: this.links
@@ -208,9 +208,9 @@ class App extends React.Component {
 	componentDidMount() {
 		this.loadFromServer(this.state.pageSize);
 		stompClient.register([
-			{route: '/topic/newEmployee', callback: this.refreshAndGoToLastPage},
-			{route: '/topic/updateEmployee', callback: this.refreshCurrentPage},
-			{route: '/topic/deleteEmployee', callback: this.refreshCurrentPage}
+			{route: '/topic/newUser', callback: this.refreshAndGoToLastPage},
+			{route: '/topic/updateUser', callback: this.refreshCurrentPage},
+			{route: '/topic/deleteUser', callback: this.refreshCurrentPage}
 		]);
 	}
 	// end::register-handlers[]
@@ -219,8 +219,8 @@ class App extends React.Component {
 		return (
 			<div>
 				<CreateDialog attributes={this.state.attributes} onCreate={this.onCreate}/>
-				<EmployeeList page={this.state.page}
-							  employees={this.state.employees}
+				<UserList page={this.state.page}
+							  users={this.state.users}
 							  links={this.state.links}
 							  pageSize={this.state.pageSize}
 							  attributes={this.state.attributes}
@@ -242,11 +242,11 @@ class CreateDialog extends React.Component {
 
 	handleSubmit(e) {
 		e.preventDefault();
-		var newEmployee = {};
+		var newUser = {};
 		this.props.attributes.forEach(attribute => {
-			newEmployee[attribute] = ReactDOM.findDOMNode(this.refs[attribute]).value.trim();
+			newUser[attribute] = ReactDOM.findDOMNode(this.refs[attribute]).value.trim();
 		});
-		this.props.onCreate(newEmployee);
+		this.props.onCreate(newUser);
 		this.props.attributes.forEach(attribute => {
 			ReactDOM.findDOMNode(this.refs[attribute]).value = ''; // clear out the dialog's inputs
 		});
@@ -261,13 +261,13 @@ class CreateDialog extends React.Component {
 		);
 		return (
 			<div>
-				<a href="#createEmployee">Create</a>
+				<a href="#createUser">Create</a>
 
-				<div id="createEmployee" className="modalDialog">
+				<div id="createUser" className="modalDialog">
 					<div>
 						<a href="#" title="Close" className="close">X</a>
 
-						<h2>Create new employee</h2>
+						<h2>Create new user</h2>
 
 						<form>
 							{inputs}
@@ -289,24 +289,24 @@ class UpdateDialog extends React.Component {
 
 	handleSubmit(e) {
 		e.preventDefault();
-		var updatedEmployee = {};
+		var updatedUser = {};
 		this.props.attributes.forEach(attribute => {
-			updatedEmployee[attribute] = ReactDOM.findDOMNode(this.refs[attribute]).value.trim();
+			updatedUser[attribute] = ReactDOM.findDOMNode(this.refs[attribute]).value.trim();
 		});
-		this.props.onUpdate(this.props.employee, updatedEmployee);
+		this.props.onUpdate(this.props.user, updatedUser);
 		window.location = "#";
 	}
 
 	render() {
 		var inputs = this.props.attributes.map(attribute =>
-				<p key={this.props.employee.entity[attribute]}>
+				<p key={this.props.user.entity[attribute]}>
 					<input type="text" placeholder={attribute}
-						   defaultValue={this.props.employee.entity[attribute]}
+						   defaultValue={this.props.user.entity[attribute]}
 						   ref={attribute} className="field" />
 				</p>
 		);
 
-		var dialogId = "updateEmployee-" + this.props.employee.entity._links.self.href;
+		var dialogId = "updateUser-" + this.props.user.entity._links.self.href;
 
 		return (
 			<div>
@@ -316,7 +316,7 @@ class UpdateDialog extends React.Component {
 					<div>
 						<a href="#" title="Close" className="close">X</a>
 
-						<h2>Update an employee</h2>
+						<h2>Update an user</h2>
 
 						<form>
 							{inputs}
@@ -330,7 +330,7 @@ class UpdateDialog extends React.Component {
 
 }
 
-class EmployeeList extends React.Component {
+class UserList extends React.Component {
 
 	constructor(props) {
 		super(props);
@@ -373,11 +373,11 @@ class EmployeeList extends React.Component {
 
 	render() {
 		var pageInfo = this.props.page.hasOwnProperty("number") ?
-			<h3>Employees - Page {this.props.page.number + 1} of {this.props.page.totalPages}</h3> : null;
+			<h3>Users - Page {this.props.page.number + 1} of {this.props.page.totalPages}</h3> : null;
 
-		var employees = this.props.employees.map(employee =>
-			<Employee key={employee.entity._links.self.href}
-					  employee={employee}
+		var users = this.props.users.map(user =>
+			<User key={user.entity._links.self.href}
+					  user={user}
 					  attributes={this.props.attributes}
 					  onUpdate={this.props.onUpdate}
 					  onDelete={this.props.onDelete}/>
@@ -411,7 +411,7 @@ class EmployeeList extends React.Component {
 							<th></th>
 							<th></th>
 						</tr>
-						{employees}
+						{users}
 					</tbody>
 				</table>
 				<div>
@@ -422,8 +422,8 @@ class EmployeeList extends React.Component {
 	}
 }
 
-// tag::employee[]
-class Employee extends React.Component {
+// tag::user[]
+class User extends React.Component {
 
 	constructor(props) {
 		super(props);
@@ -431,18 +431,18 @@ class Employee extends React.Component {
 	}
 
 	handleDelete() {
-		this.props.onDelete(this.props.employee);
+		this.props.onDelete(this.props.user);
 	}
 
 	render() {
 		return (
 			<tr>
-				<td>{this.props.employee.entity.firstName}</td>
-				<td>{this.props.employee.entity.lastName}</td>
-				<td>{this.props.employee.entity.description}</td>
-				<td>{this.props.employee.entity.manager.name}</td>
+				<td>{this.props.user.entity.firstName}</td>
+				<td>{this.props.user.entity.lastName}</td>
+				<td>{this.props.user.entity.description}</td>
+				<td>{this.props.user.entity.manager.name}</td>
 				<td>
-					<UpdateDialog employee={this.props.employee}
+					<UpdateDialog user={this.props.user}
 								  attributes={this.props.attributes}
 								  onUpdate={this.props.onUpdate}/>
 				</td>
@@ -453,7 +453,7 @@ class Employee extends React.Component {
 		)
 	}
 }
-// end::employee[]
+// end::user[]
 
 ReactDOM.render(
 	<App />,

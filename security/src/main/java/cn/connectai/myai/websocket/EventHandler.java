@@ -13,10 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.greglturnquist.payroll;
+package cn.connectai.myai.websocket;
 
-import static com.greglturnquist.payroll.WebSocketConfiguration.*;
-
+import cn.connectai.myai.config.WebSocketConfiguration;
+import cn.connectai.myai.entity.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.rest.core.annotation.HandleAfterCreate;
 import org.springframework.data.rest.core.annotation.HandleAfterDelete;
@@ -31,7 +31,7 @@ import org.springframework.stereotype.Component;
  */
 // tag::code[]
 @Component
-@RepositoryEventHandler(Employee.class)
+@RepositoryEventHandler(User.class)
 public class EventHandler {
 
 	private final SimpMessagingTemplate websocket;
@@ -45,31 +45,31 @@ public class EventHandler {
 	}
 
 	@HandleAfterCreate
-	public void newEmployee(Employee employee) {
+	public void newUser(User user) {
 		this.websocket.convertAndSend(
-				MESSAGE_PREFIX + "/newEmployee", getPath(employee));
+				WebSocketConfiguration.MESSAGE_PREFIX + "/newUser", getPath(user));
 	}
 
 	@HandleAfterDelete
-	public void deleteEmployee(Employee employee) {
+	public void deleteUser(User user) {
 		this.websocket.convertAndSend(
-				MESSAGE_PREFIX + "/deleteEmployee", getPath(employee));
+				WebSocketConfiguration.MESSAGE_PREFIX + "/deleteUser", getPath(user));
 	}
 
 	@HandleAfterSave
-	public void updateEmployee(Employee employee) {
+	public void updateUser(User user) {
 		this.websocket.convertAndSend(
-				MESSAGE_PREFIX + "/updateEmployee", getPath(employee));
+				WebSocketConfiguration.MESSAGE_PREFIX + "/updateUser", getPath(user));
 	}
 
 	/**
-	 * Take an {@link Employee} and get the URI using Spring Data REST's {@link EntityLinks}.
+	 * Take an {@link User} and get the URI using Spring Data REST's {@link EntityLinks}.
 	 *
-	 * @param employee
+	 * @param user
 	 */
-	private String getPath(Employee employee) {
-		return this.entityLinks.linkForSingleResource(employee.getClass(),
-				employee.getId()).toUri().getPath();
+	private String getPath(User user) {
+		return this.entityLinks.linkForSingleResource(user.getClass(),
+				user.getId()).toUri().getPath();
 	}
 
 }

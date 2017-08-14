@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.greglturnquist.payroll;
+package cn.connectai.myai.entity;
 
 import org.springframework.data.repository.Repository;
 import org.springframework.data.rest.core.annotation.RepositoryRestResource;
