@@ -37,6 +37,13 @@ public class Employee {
 	private String firstName;
 	private String lastName;
 	private String description;
+	private String phoneNum;
+	private String mailAddress;
+	private String weiboId;
+	private String qqId;
+	private String wxOpenId;
+	private String wxUnionId;
+	private String wxAccessTocken;
 
 	private @Version @JsonIgnore Long version;
 

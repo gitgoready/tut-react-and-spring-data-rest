@@ -43,28 +43,28 @@ public class DatabaseLoader implements CommandLineRunner {
 	@Override
 	public void run(String... strings) throws Exception {
 
-		Manager greg = this.managers.save(new Manager("greg", "turnquist",
-							"ROLE_MANAGER"));
-		Manager oliver = this.managers.save(new Manager("oliver", "gierke",
-							"ROLE_MANAGER"));
-
-		SecurityContextHolder.getContext().setAuthentication(
-			new UsernamePasswordAuthenticationToken("greg", "doesn't matter",
-				AuthorityUtils.createAuthorityList("ROLE_MANAGER")));
-
-		this.employees.save(new Employee("Frodo", "Baggins", "ring bearer", greg));
-		this.employees.save(new Employee("Bilbo", "Baggins", "burglar", greg));
-		this.employees.save(new Employee("Gandalf", "the Grey", "wizard", greg));
-
-		SecurityContextHolder.getContext().setAuthentication(
-			new UsernamePasswordAuthenticationToken("oliver", "doesn't matter",
-				AuthorityUtils.createAuthorityList("ROLE_MANAGER")));
-
-		this.employees.save(new Employee("Samwise", "Gamgee", "gardener", oliver));
-		this.employees.save(new Employee("Merry", "Brandybuck", "pony rider", oliver));
-		this.employees.save(new Employee("Peregrin", "Took", "pipe smoker", oliver));
-
-		SecurityContextHolder.clearContext();
+//		Manager greg = this.managers.save(new Manager("greg", "turnquist",
+//							"ROLE_MANAGER"));
+//		Manager oliver = this.managers.save(new Manager("oliver", "gierke",
+//							"ROLE_MANAGER"));
+//
+//		SecurityContextHolder.getContext().setAuthentication(
+//			new UsernamePasswordAuthenticationToken("greg", "doesn't matter",
+//				AuthorityUtils.createAuthorityList("ROLE_MANAGER")));
+//
+//		this.employees.save(new Employee("Frodo", "Baggins", "ring bearer", greg));
+//		this.employees.save(new Employee("Bilbo", "Baggins", "burglar", greg));
+//		this.employees.save(new Employee("Gandalf", "the Grey", "wizard", greg));
+//
+//		SecurityContextHolder.getContext().setAuthentication(
+//			new UsernamePasswordAuthenticationToken("oliver", "doesn't matter",
+//				AuthorityUtils.createAuthorityList("ROLE_MANAGER")));
+//
+//		this.employees.save(new Employee("Samwise", "Gamgee", "gardener", oliver));
+//		this.employees.save(new Employee("Merry", "Brandybuck", "pony rider", oliver));
+//		this.employees.save(new Employee("Peregrin", "Took", "pipe smoker", oliver));
+//
+//		SecurityContextHolder.clearContext();
 	}
 }
 // end::code[]
