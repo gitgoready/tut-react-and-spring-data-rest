@@ -17,15 +17,20 @@ package cn.connectai.myai.config;
 
 import cn.connectai.myai.entity.Manager;
 import cn.connectai.myai.entity.User;
+import cn.connectai.myai.security.JwtAuthenticationTokenFilter;
 import cn.connectai.myai.security.JwtUserDetailsServiceImpl;
 import cn.connectai.myai.security.ManagerDetailsServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 /**
  * @author Greg Turnquist
@@ -46,23 +51,63 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 				.passwordEncoder(User.PASSWORD_ENCODER);
 	}
 
-	@Override
-	protected void configure(HttpSecurity http) throws Exception {
-		http
-			.authorizeRequests()
-				.antMatchers("/built/**", "/main.css").permitAll()
-				.anyRequest().authenticated()
-				.and()
-			.formLogin()
-				.defaultSuccessUrl("/", true)
-				.permitAll()
-				.and()
-			.httpBasic()
-				.and()
-			.csrf().disable()
-			.logout()
-				.logoutSuccessUrl("/");
+	@Bean
+	public JwtAuthenticationTokenFilter authenticationTokenFilterBean() throws Exception {
+		return new JwtAuthenticationTokenFilter();
 	}
+
+	@Override
+	protected void configure(HttpSecurity httpSecurity) throws Exception {
+		httpSecurity
+				// 由于使用的是JWT，我们这里不需要csrf
+				.csrf().disable()
+
+				// 基于token，所以不需要session
+				.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
+
+				.authorizeRequests()
+				//.antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+
+				// 允许对于网站静态资源的无授权访问
+				.antMatchers(
+						HttpMethod.GET,
+						"/",
+						"/*.html",
+						"/favicon.ico",
+						"/**/*.html",
+						"/**/*.css",
+						"/**/*.js"
+				).permitAll()
+				// 对于获取token的rest api要允许匿名访问
+				.antMatchers("/auth/**").permitAll()
+				// 除上面外的所有请求全部需要鉴权认证
+				.anyRequest().authenticated();
+
+		// 禁用缓存
+		httpSecurity.headers().cacheControl();
+		// 添加JWT filter
+		httpSecurity
+				.addFilterBefore(authenticationTokenFilterBean(), UsernamePasswordAuthenticationFilter.class);
+
+	}
+
+//	@Override
+//	protected void configure(HttpSecurity http) throws Exception {
+//		http
+//			.authorizeRequests()
+//				.antMatchers("/built/**", "/main.css").permitAll()
+//				.anyRequest().authenticated()
+//				.and()
+//			.formLogin()
+//				.defaultSuccessUrl("/", true)
+//				.permitAll()
+//				.and()
+//			.httpBasic()
+//				.and()
+//			.csrf().disable()
+//			.logout()
+//				.logoutSuccessUrl("/");
+//	}
 
 //	@Override
 //	public void configure(WebSecurity web) throws Exception {

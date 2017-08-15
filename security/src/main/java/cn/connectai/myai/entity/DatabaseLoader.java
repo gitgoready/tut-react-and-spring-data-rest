@@ -45,13 +45,7 @@ public class DatabaseLoader implements CommandLineRunner {
 	public void run(String... strings) throws Exception {
 
 //		initDb();
-//		SecurityContextHolder.getContext().setAuthentication(
-//				new UsernamePasswordAuthenticationToken("Frodo", "doesn't matter",
-//						AuthorityUtils.createAuthorityList("ROLE_USER")));
-//		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-//		SecurityContextHolder.clearContext();
-//		auth = SecurityContextHolder.getContext().getAuthentication();
-//		int i = 0;
+
 	}
 
 	private void initDb()

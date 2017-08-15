@@ -50,11 +50,11 @@ public class User {
 	private String qqId;
 	private String wxOpenId;
 	private String wxUnionId;
-	private String name;
+	private String sso;
 
 	private String wxAccessTocken;
 
-	private  @JsonIgnore String password;
+	private String password;//@JsonIgnore
 	private Date lastPasswordResetDate;
 	private String[] roles;
 
@@ -63,9 +63,11 @@ public class User {
 	public void setPassword(String password) {
 		this.password = PASSWORD_ENCODER.encode(password);
 	}
+	//@JsonIgnore
+	public String getPassword() {return this.password;}
 
 
-	private User() {this.roles = new String[]{"ROLE_USER"};}
+		private User() {this.roles = new String[]{"ROLE_USER"};}
 
 	public User(String firstName, String lastName, String description, String password, Manager manager) {
 		this.firstName = firstName;
@@ -73,7 +75,7 @@ public class User {
 		this.description = description;
 		this.manager = manager;
 		this.setPassword(password);
-		this.name = firstName;
+		this.sso = firstName;
 		this.roles = new String[]{"ROLE_USER"};
 	}
 }

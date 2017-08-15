@@ -40,6 +40,6 @@ public interface UserRepository extends PagingAndSortingRepository<User, Long> {
 	@PreAuthorize("#user?.manager?.name == authentication?.name")
 	void delete(@Param("user") User user);
 
-	User findByName(String name);
+	User findBySso(String sso);
 }
 // end::code[]
