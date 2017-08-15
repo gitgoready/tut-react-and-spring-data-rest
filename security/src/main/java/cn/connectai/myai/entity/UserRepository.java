@@ -25,7 +25,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
  */
 // tag::code[]
 @RepositoryRestResource
-@PreAuthorize("hasRole('ROLE_MANAGER')")
+//@PreAuthorize("hasAnyRole('ROLE_MANAGER','ROLE_USER')")
 public interface UserRepository extends PagingAndSortingRepository<User, Long> {
 
 	@Override
@@ -40,5 +40,6 @@ public interface UserRepository extends PagingAndSortingRepository<User, Long> {
 	@PreAuthorize("#user?.manager?.name == authentication?.name")
 	void delete(@Param("user") User user);
 
+	User findByName(String name);
 }
 // end::code[]

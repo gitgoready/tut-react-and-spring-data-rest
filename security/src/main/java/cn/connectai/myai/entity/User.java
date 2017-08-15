@@ -24,6 +24,9 @@ import javax.persistence.Version;
 import lombok.Data;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.ToString;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.Date;
 
@@ -33,7 +36,9 @@ import java.util.Date;
 // tag::code[]
 @Data
 @Entity
+@ToString(exclude = "password")
 public class User {
+	public static final PasswordEncoder PASSWORD_ENCODER = new BCryptPasswordEncoder();
 
 	private @Id @GeneratedValue Long id;
 	private String firstName;
@@ -45,24 +50,31 @@ public class User {
 	private String qqId;
 	private String wxOpenId;
 	private String wxUnionId;
-	private String sso;
+	private String name;
 
 	private String wxAccessTocken;
 
-	private String password;
+	private  @JsonIgnore String password;
 	private Date lastPasswordResetDate;
 	private String[] roles;
 
 	private @Version @JsonIgnore Long version;
 	private @ManyToOne Manager manager;
+	public void setPassword(String password) {
+		this.password = PASSWORD_ENCODER.encode(password);
+	}
 
-	private User() {}
 
-	public User(String firstName, String lastName, String description, Manager manager) {
+	private User() {this.roles = new String[]{"ROLE_USER"};}
+
+	public User(String firstName, String lastName, String description, String password, Manager manager) {
 		this.firstName = firstName;
 		this.lastName = lastName;
 		this.description = description;
 		this.manager = manager;
+		this.setPassword(password);
+		this.name = firstName;
+		this.roles = new String[]{"ROLE_USER"};
 	}
 }
 // end::code[]

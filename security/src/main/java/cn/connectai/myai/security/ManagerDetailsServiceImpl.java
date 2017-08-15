@@ -30,12 +30,12 @@ import org.springframework.stereotype.Component;
  */
 // tag::code[]
 @Component
-public class ManagerDetailsService implements UserDetailsService {
+public class ManagerDetailsServiceImpl implements UserDetailsService {
 
 	private final ManagerRepository repository;
 
 	@Autowired
-	public ManagerDetailsService(ManagerRepository repository) {
+	public ManagerDetailsServiceImpl(ManagerRepository repository) {
 		this.repository = repository;
 	}
 

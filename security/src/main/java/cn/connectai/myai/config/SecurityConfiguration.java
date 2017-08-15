@@ -16,7 +16,9 @@
 package cn.connectai.myai.config;
 
 import cn.connectai.myai.entity.Manager;
-import cn.connectai.myai.security.ManagerDetailsService;
+import cn.connectai.myai.entity.User;
+import cn.connectai.myai.security.JwtUserDetailsServiceImpl;
+import cn.connectai.myai.security.ManagerDetailsServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -35,13 +37,13 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
 	@Autowired
-	private ManagerDetailsService userDetailsService;
+	private  JwtUserDetailsServiceImpl userDetailsService;//ManagerDetailsServiceImpl
 
 	@Override
 	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
 		auth
 			.userDetailsService(this.userDetailsService)
-				.passwordEncoder(Manager.PASSWORD_ENCODER);
+				.passwordEncoder(User.PASSWORD_ENCODER);
 	}
 
 	@Override

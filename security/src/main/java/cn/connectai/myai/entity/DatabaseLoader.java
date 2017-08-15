@@ -17,6 +17,10 @@ package cn.connectai.myai.entity;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.authority.AuthorityUtils;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
 /**
@@ -40,28 +44,45 @@ public class DatabaseLoader implements CommandLineRunner {
 	@Override
 	public void run(String... strings) throws Exception {
 
-//		Manager greg = this.managers.save(new Manager("greg", "turnquist",
-//							"ROLE_MANAGER"));
-//		Manager oliver = this.managers.save(new Manager("oliver", "gierke",
-//							"ROLE_MANAGER"));
-//
+//		initDb();
 //		SecurityContextHolder.getContext().setAuthentication(
-//			new UsernamePasswordAuthenticationToken("greg", "doesn't matter",
-//				AuthorityUtils.createAuthorityList("ROLE_MANAGER")));
-//
-//		this.userRepository.save(new User("Frodo", "Baggins", "ring bearer", greg));
-//		this.userRepository.save(new User("Bilbo", "Baggins", "burglar", greg));
-//		this.userRepository.save(new User("Gandalf", "the Grey", "wizard", greg));
-//
-//		SecurityContextHolder.getContext().setAuthentication(
-//			new UsernamePasswordAuthenticationToken("oliver", "doesn't matter",
-//				AuthorityUtils.createAuthorityList("ROLE_MANAGER")));
-//
-//		this.userRepository.save(new User("Samwise", "Gamgee", "gardener", oliver));
-//		this.userRepository.save(new User("Merry", "Brandybuck", "pony rider", oliver));
-//		this.userRepository.save(new User("Peregrin", "Took", "pipe smoker", oliver));
-//
+//				new UsernamePasswordAuthenticationToken("Frodo", "doesn't matter",
+//						AuthorityUtils.createAuthorityList("ROLE_USER")));
+//		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 //		SecurityContextHolder.clearContext();
+//		auth = SecurityContextHolder.getContext().getAuthentication();
+//		int i = 0;
+	}
+
+	private void initDb()
+	{
+		Manager greg = this.managers.save(new Manager("greg", "turnquist",
+					"ROLE_MANAGER"));
+		Manager oliver = this.managers.save(new Manager("oliver", "gierke",
+							"ROLE_MANAGER"));
+
+		SecurityContextHolder.getContext().setAuthentication(
+			new UsernamePasswordAuthenticationToken("greg", "doesn't matter",
+				AuthorityUtils.createAuthorityList("ROLE_MANAGER")));
+
+
+		this.userRepository.save(new User("Frodo", "Baggins", "ring bearer " , "pass", greg));
+		this.userRepository.save(new User("Bilbo", "Baggins", "burglar", "pass", greg));
+		this.userRepository.save(new User("Gandalf", "the Grey", "wizard", "pass", greg));
+
+//		SecurityContextHolder.getContext().setAuthentication(
+//				new UsernamePasswordAuthenticationToken("Frodo", "doesn't matter",
+//						AuthorityUtils.createAuthorityList("ROLE_USER")));
+
+		SecurityContextHolder.getContext().setAuthentication(
+			new UsernamePasswordAuthenticationToken("oliver", "doesn't matter",
+				AuthorityUtils.createAuthorityList("ROLE_MANAGER")));
+
+		this.userRepository.save(new User("Samwise", "Gamgee", "gardener", "pass", oliver));
+		this.userRepository.save(new User("Merry", "Brandybuck", "pony rider", "pass", oliver));
+		this.userRepository.save(new User("Peregrin", "Took", "pipe smoker", "pass", oliver));
+
+		SecurityContextHolder.clearContext();
 	}
 }
 // end::code[]
