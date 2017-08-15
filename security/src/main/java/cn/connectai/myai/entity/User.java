@@ -38,7 +38,7 @@ import java.util.Date;
 @Entity
 @ToString(exclude = "password")
 public class User {
-	public static final PasswordEncoder PASSWORD_ENCODER = new BCryptPasswordEncoder();
+//	public static final PasswordEncoder PASSWORD_ENCODER = new BCryptPasswordEncoder();
 
 	private @Id @GeneratedValue Long id;
 	private String firstName;
@@ -60,11 +60,11 @@ public class User {
 
 	private @Version @JsonIgnore Long version;
 	private @ManyToOne Manager manager;
-	public void setPassword(String password) {
-		this.password = PASSWORD_ENCODER.encode(password);
-	}
-	//@JsonIgnore
-	public String getPassword() {return this.password;}
+//	public void setPassword(String password) {
+//		this.password = PASSWORD_ENCODER.encode(password);
+//	}
+//	//@JsonIgnore
+//	public String getPassword() {return this.password;}
 
 
 		private User() {this.roles = new String[]{"ROLE_USER"};}

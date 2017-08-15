@@ -16,7 +16,7 @@ import org.springframework.stereotype.Service;
  * Created by zy on 15/08/17.
  */
 @Service
-@Primary
+//@Primary
 public class JwtUserDetailsServiceImpl implements UserDetailsService {
 
     private UserRepository repository;
