@@ -30,9 +30,10 @@ public class Swagger2Config {
                 .apiInfo(apiInfo())
                 .select()
                 //为当前包路径
-                .apis(RequestHandlerSelectors.basePackage("cn.connectai.myai"))
+//                .apis(RequestHandlerSelectors.basePackage("cn.connectai.myai"))
                 .paths(PathSelectors.any())
                 .build();
+//                .pathMapping("/myai");
     }
     //构建 api文档的详细信息函数
     private ApiInfo apiInfo() {

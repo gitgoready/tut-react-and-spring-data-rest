@@ -19,6 +19,7 @@ import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.data.repository.query.Param;
 import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.RequestParam;
 
 /**
  * @author Greg Turnquist
@@ -27,6 +28,8 @@ import org.springframework.security.access.prepost.PreAuthorize;
 @RepositoryRestResource
 //@PreAuthorize("hasAnyRole('ROLE_MANAGER','ROLE_USER')")
 public interface UserRepository extends PagingAndSortingRepository<User, Long> {
+
+	User findBySso(@Param("sso") @RequestParam(value="sso") String sso);
 
 	@Override
 	@PreAuthorize("#user?.manager == null or #user?.manager?.name == authentication?.name")
@@ -39,7 +42,7 @@ public interface UserRepository extends PagingAndSortingRepository<User, Long> {
 	@Override
 	@PreAuthorize("#user?.manager?.name == authentication?.name")
 	void delete(@Param("user") User user);
-
-	User findBySso(String sso);
+//
+//	User findBySso(String sso);
 }
 // end::code[]

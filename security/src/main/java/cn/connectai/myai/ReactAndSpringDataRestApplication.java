@@ -16,7 +16,10 @@
 package cn.connectai.myai;
 
 import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
+import org.springframework.context.annotation.Import;
 
 /**
  * @author Greg Turnquist
@@ -24,6 +27,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 // tag::code[]
 @SpringBootApplication
 //@EnableAutoConfiguration(exclude={DataSourceAutoConfiguration.class})
+@Import({springfox.documentation.spring.data.rest.configuration.SpringDataRestConfiguration.class})
 public class ReactAndSpringDataRestApplication {
 
 	public static void main(String[] args) {
