@@ -58,7 +58,7 @@ public class UserController {
 
     @PostAuthorize("returnObject.sso == principal.username or hasRole('ROLE_MANAGER')")
     @RequestMapping(value = "/",method = RequestMethod.GET)
-    public User getUserByUsername(@RequestParam(value="username") String username) {
+    public User getUserByUsername(@RequestParam(value="username") String username, @RequestHeader(value="Authorization") String token) {
         return repository.findBySso(username);
     }
 }
